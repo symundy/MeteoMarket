@@ -1,0 +1,1 @@
+MeteoMarket: Betting on the weather. Users can bet on the weather in different cities for a certain time period using in-game currency. This is my second project with Kotlin and Android Studio, so I'm using Google Gemini extensively with coding. 
