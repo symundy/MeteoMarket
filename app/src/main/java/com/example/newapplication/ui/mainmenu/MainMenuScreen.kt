@@ -10,17 +10,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.newapplication.data.local.GameSaveSlot
 
 
-enum class ScreenState {
-    CreateProfile,
-    MainMenu,
-    Dashboard
-}
 @Composable
 fun MainMenuScreen(
     username: String,
@@ -67,7 +63,7 @@ fun MainMenuScreen(
                 val slotNumber = index + 1
                 // Find if we have database data for this slot, or create a default empty state
                 val slotData = saveSlots.find { it.slotNumber == slotNumber }
-                    ?: GameSaveSlot(slotNumber = slotNumber, balance = 1000.0, currentDay = 1, isOccupied = false)
+                    ?: GameSaveSlot(slotNumber = slotNumber,name = "Game ${index+1}", balance = 1000.0, currentDay = 1, isOccupied = false)
 
                 SaveSlotCard(
                     slot = slotData,
@@ -75,6 +71,7 @@ fun MainMenuScreen(
                 )
             }
         }
+
     }
 }
 
@@ -96,7 +93,7 @@ fun SaveSlotCard(
             // Left side: Slot details
             Column {
                 Text(
-                    text = "Slot ${slot.slotNumber}",
+                    text = slot.name,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
