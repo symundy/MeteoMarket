@@ -1,5 +1,6 @@
 package com.example.newapplication.ui.dashboard
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,13 +19,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.newapplication.viewmodel.MarketViewModel
+import com.example.newapplication.ui.currentbets.combineSimilarBets
+import com.example.newapplication.viewmodel.*
 
+// needs to have a way to know when to switch to the CurrentBets view
 @Composable
 fun MarketDashboard(viewModel: MarketViewModel) {
     // Read the current state directly from the ViewModel
     val player = viewModel.playerProfile
     val markets = viewModel.markets
+
+    val currentSlots = viewModel.availableLiveSlots
 
     Column(
         modifier = Modifier
@@ -48,14 +53,59 @@ fun MarketDashboard(viewModel: MarketViewModel) {
         Text(text = "Available Markets", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Adds a button to show the current bets screen
+        Text(
+            text = "View Current Bets",
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+             .padding(vertical = 8.dp)
+             .clickable {
+                 val combinedInvestments = combineSimilarBets(viewModel.playerProfile.investments)
+                 // Navigate to CurrentBets screen with combinedInvestments
+
+                 viewModel.showCurrentBetsScreen(combinedInvestments)
+
+         }
+        )
+
+        // --- DEV BUTTON ---
+        Text(
+           text = "🧪 Reload Markets (Dev)",
+           fontSize = 14.sp,
+           color = MaterialTheme.colorScheme.tertiary,
+           modifier = Modifier
+               .padding(vertical = 8.dp)
+               .clickable {
+                   viewModel.forceReloadWeatherForTesting()
+               }
+        )
+
+
         // --- LIST OF MARKETS ---
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(markets) { market ->
+            // If the list is empty (API is still loading), maybe show a loading text here!
+            // Loading text:
+            if (currentSlots.isEmpty()) {
+                item {
+                    Text(
+                        text = "Loading markets...",
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+
+            items(currentSlots) { market ->
                 MarketCard(
                     market = market,
-                    onInvestClick = { viewModel.investInMarket(market.id, 10.0) } // Standard $10 investment
+                    onInvestClick = {
+                        // Pass the cityName instead of an ID
+                        viewModel.investInMarket(market.cityName, 10.0)
+                    }
                 )
             }
         }

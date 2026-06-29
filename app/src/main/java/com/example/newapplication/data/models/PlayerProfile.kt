@@ -7,5 +7,6 @@ data class PlayerProfile(
     val gameName: String,
     val slotName1: String,
     val slotName2: String,
-    val slotName3: String
+    val slotName3: String,
+    val investments: List<Investment> = emptyList()
 )

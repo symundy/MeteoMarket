@@ -15,9 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.newapplication.data.models.WeatherMarket
+import com.example.newapplication.viewmodel.*
 @Composable
-fun MarketCard(market: WeatherMarket, onInvestClick: () -> Unit) {
+fun MarketCard(market: LiveGameSlot, onInvestClick: () -> Unit) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
@@ -26,10 +26,13 @@ fun MarketCard(market: WeatherMarket, onInvestClick: () -> Unit) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
-                Text(text = market.cityName, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                Text(text = "Bet: ${market.targetCondition}", fontSize = 14.sp)
-                Text(text = "Odds: ${market.payoutOdds}x", fontSize = 12.sp, color = MaterialTheme.colorScheme.secondary)
+            // Added weight(1f) to keep text from crushing the button
+            Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
+                Text(text = "${market.cityName}, ${market.stateName}", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                // Show the bet type (weather keyword) with hours until forecast
+                Text(text = "Bet: ${market.betType} in ${market.hoursUntilForecast} hours", fontSize = 14.sp)
+                // Show the multiplier (higher for rarer events)
+                Text(text = "Odds: ${market.riskMultiplier}x", fontSize = 12.sp, color = MaterialTheme.colorScheme.secondary)
             }
 
             // The Action Button
